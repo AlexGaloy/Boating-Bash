@@ -1,0 +1,172 @@
+/*
+First time? Check out the tutorial game:
+https://sprig.hackclub.com/gallery/getting_started
+
+@title: Boating Bash
+@author: 
+@tags: []
+@addedOn: 2024-00-00
+*/
+
+const player = "p"
+const back = "b"
+const rock = "r"
+const isle = "i"
+const whirl = "w"
+
+setLegend(
+  [ player, bitmap`
+................
+................
+..0000000000....
+..066030C2200...
+.0066300C2220...
+00333000C22200..
+030330.0C22220..
+000550.0C00000..
+.0050500C0000000
+.0CCCCCCCCCCCCC0
+.0CCCCCCCCCC0000
+.0CCCCCCCCC00...
+.000CCCCC000....
+...0000000......
+................
+................`],
+  [ back, bitmap`
+7777777777777777
+7777777777777777
+7775777777777777
+7555577777777777
+5577557777557777
+7777777775775777
+7777777755777577
+7777777777777777
+7777777777777777
+7777557777777777
+7775755777777777
+7755777557777777
+7777777777777777
+7777777777557777
+7777777777575777
+7777777777777777`],
+  [ rock, bitmap`
+................
+................
+................
+................
+.....000000.....
+....00111100....
+....011111100...
+...0011111110...
+...01111111100..
+..0011111111100.
+..0111111111110.
+..0111111111110.
+..0111111111110.
+..0111....11110.
+..01............
+................`],
+  [ isle, bitmap`
+.......000......
+......0040......
+...000040000....
+...044444440....
+...0004FC000....
+...004CFF0......
+...04000F00.....
+...000.0FF0.....
+.......00F0.....
+.......00F000...
+....00006666000.
+..00066666666600
+.006666666666660
+0066666666666660
+0666666666666660
+0000000000000000`],
+  [ whirl, bitmap`
+................
+................
+................
+................
+................
+....00000000....
+.00005555550000.
+005555555775550.
+0557777222777500
+0777552252257550
+0755255555527550
+0555222272255500
+000555557770000.
+..0000000000....
+................
+................`],
+)
+
+setSolids([ player, rock ])
+setBackground(back)
+
+let level = 0
+const levels = [
+  map`
+.ri.
+..r.
+p...
+.r..`,
+  map`
+..wr
+irr.
+r...
+p..w`,
+  map`
+rw.ir
+.rrrp
+w.r..
+....r`,
+  map`
+..r.w.
+.r.rr.
+....ri
+r.r.rr
+p.r.rw
+rrr...`,
+  map`
+....r.
+wrr.r.
+rr....
+...rr.
+.r..r.
+.rrrr.
+.p.w.i`,
+]
+
+setMap(levels[level])
+
+setPushables({
+  [ player ]: []
+})
+
+onInput("s", () => {
+  getFirst(player).y += 1
+})
+onInput("w", () => {
+  getFirst(player).y -= 1
+})
+onInput("a", () => {
+  getFirst(player).x -= 1
+})
+onInput("d", () => {
+  getFirst(player).x += 1
+})
+afterInput(() => {
+const win = tilesWith(player, isle).length;
+const whirly = tilesWith(player, whirl).length;
+var done = false
+if (win === 1) {
+  level = level + 1 
+  setMap(levels[level])
+} else if (whirly === 1){
+  whirlX = getFirst(whirl).x
+  whirlY = getFirst(whirl).y
+  getFirst(player).x = whirlX
+  getFirst(player).y = whirlY
+}})
